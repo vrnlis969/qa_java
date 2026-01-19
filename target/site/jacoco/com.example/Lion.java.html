@@ -4,11 +4,11 @@ import java.util.List;
 
 public class Lion {
     private boolean hasMane;
-    private FelineInterface feline;  // Зависим от интерфейса, а не от класса
+    private Feline feline;  // Теперь зависит от класса, а не от интерфейса
 
-    // Конструктор принимает зависимость извне
-<span class="fc" id="L10">    public Lion(String sex, FelineInterface feline) throws Exception {</span>
-<span class="fc" id="L11">        this.feline = feline;  // Получаем зависимость через конструктор</span>
+    // Конструктор принимает Feline (инъекция зависимости)
+<span class="fc" id="L10">    public Lion(String sex, Feline feline) throws Exception {</span>
+<span class="fc" id="L11">        this.feline = feline;</span>
 <span class="fc bfc" id="L12" title="All 2 branches covered.">        if (&quot;Самец&quot;.equals(sex)) {</span>
 <span class="fc" id="L13">            hasMane = true;</span>
 <span class="fc bfc" id="L14" title="All 2 branches covered.">        } else if (&quot;Самка&quot;.equals(sex)) {</span>

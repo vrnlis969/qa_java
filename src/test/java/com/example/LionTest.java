@@ -12,27 +12,28 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)  // Включаем поддержку Mockito
+@ExtendWith(MockitoExtension.class)
 class LionTest {
 
     @Mock
-    private FelineInterface felineMock;  // Создаем мок интерфейса FelineActions
+    private Feline felineMock;
 
-    // Параметризованный тест для конструктора Lion
     @ParameterizedTest
     @CsvSource({
             "Самец, true",
             "Самка, false"
     })
-    void constructor_ValidSex_ShouldSetHasManeCorrectly(String sex, boolean expectedHasMane) throws Exception {
-        // Act
+    void constructorValidSexShouldSetHasManeCorrectly(String sex, boolean expectedHasMane) throws Exception {
+        // Arrange - подготовка
+        // (мок уже создан)
+
+        // Act - действие
         Lion lion = new Lion(sex, felineMock);
 
-        // Assert
+        // Assert - проверка
         assertEquals(expectedHasMane, lion.doesHaveMane());
     }
 
-    // Параметризованный тест для невалидных значений пола
     @ParameterizedTest
     @CsvSource({
             "Мужчина",
@@ -40,59 +41,156 @@ class LionTest {
             "Unknown",
             "' '"
     })
-    void constructor_InvalidSex_ShouldThrowException(String invalidSex) {
-        // Act & Assert
-        Exception exception = assertThrows(Exception.class, () -> {
-            new Lion(invalidSex, felineMock);
-        });
+    void constructorInvalidSexShouldThrowException(String invalidSex) {
+        // Arrange - подготовка
+        // (мок уже создан)
 
+        // Act - действие
+        Exception exception = null;
+        try {
+            new Lion(invalidSex, felineMock);
+        } catch (Exception e) {
+            exception = e;
+        }
+
+        // Assert - проверка
+        assertNotNull(exception);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "Мужчина",
+            "Женщина",
+            "Unknown",
+            "' '"
+    })
+    void constructorInvalidSexShouldHaveCorrectMessage(String invalidSex) {
+        // Arrange - подготовка
+        // (мок уже создан)
+
+        // Act - действие
+        Exception exception = null;
+        try {
+            new Lion(invalidSex, felineMock);
+        } catch (Exception e) {
+            exception = e;
+        }
+
+        // Assert - проверка
         assertTrue(exception.getMessage().contains("допустимые значения пола"));
     }
 
     @Test
-    void getKittens_ShouldCallFelineGetKittens() throws Exception {
-        // Arrange
-        when(felineMock.getKittens()).thenReturn(3);  // Настраиваем мок
+    void getKittensShouldReturnExpectedValue() throws Exception {
+        // Arrange - подготовка
+        when(felineMock.getKittens()).thenReturn(3);
         Lion lion = new Lion("Самка", felineMock);
 
-        // Act
+        // Act - действие
         int kittens = lion.getKittens();
 
-        // Assert
+        // Assert - проверка
         assertEquals(3, kittens);
-        verify(felineMock, times(1)).getKittens();  // Проверяем вызов метода
     }
 
     @Test
-    void getFood_ShouldCallFelineEatMeat() throws Exception {
-        // Arrange
+    void getKittensShouldCallFelineGetKittensOnce() throws Exception {
+        // Arrange - подготовка
+        when(felineMock.getKittens()).thenReturn(3);
+        Lion lion = new Lion("Самка", felineMock);
+
+        // Act - действие
+        lion.getKittens();
+
+        // Assert - проверка
+        verify(felineMock, times(1)).getKittens();
+    }
+
+    @Test
+    void getFoodShouldReturnExpectedFood() throws Exception {
+        // Arrange - подготовка
         List<String> expectedFood = List.of("Мясо", "Рыба");
         when(felineMock.eatMeat()).thenReturn(expectedFood);
         Lion lion = new Lion("Самка", felineMock);
 
-        // Act
+        // Act - действие
         List<String> food = lion.getFood();
 
-        // Assert
+        // Assert - проверка
         assertEquals(expectedFood, food);
+    }
+
+    @Test
+    void getFoodShouldCallFelineEatMeatOnce() throws Exception {
+        // Arrange - подготовка
+        List<String> expectedFood = List.of("Мясо", "Рыба");
+        when(felineMock.eatMeat()).thenReturn(expectedFood);
+        Lion lion = new Lion("Самка", felineMock);
+
+        // Act - действие
+        lion.getFood();
+
+        // Assert - проверка
         verify(felineMock, times(1)).eatMeat();
     }
 
     @Test
-    void getFood_WhenFelineThrowsException_ShouldPropagateException() throws Exception {
-        // Arrange
+    void getFoodShouldThrowExceptionWhenFelineThrows() throws Exception {
+        // Arrange - подготовка
         when(felineMock.eatMeat()).thenThrow(new Exception("Ошибка получения еды"));
         Lion lion = new Lion("Самец", felineMock);
 
-        // Act & Assert
-        Exception exception = assertThrows(Exception.class, lion::getFood);
+        // Act - действие
+        Exception exception = null;
+        try {
+            lion.getFood();
+        } catch (Exception e) {
+            exception = e;
+        }
+
+        // Assert - проверка
+        assertNotNull(exception);
+    }
+
+    @Test
+    void getFoodExceptionShouldHaveCorrectMessage() throws Exception {
+        // Arrange - подготовка
+        when(felineMock.eatMeat()).thenThrow(new Exception("Ошибка получения еды"));
+        Lion lion = new Lion("Самец", felineMock);
+
+        // Act - действие
+        Exception exception = null;
+        try {
+            lion.getFood();
+        } catch (Exception e) {
+            exception = e;
+        }
+
+        // Assert - проверка
         assertEquals("Ошибка получения еды", exception.getMessage());
     }
+
     @Test
-    void doesHaveMane_ShouldReturnConsistentValue() throws Exception {
+    void doesHaveManeShouldReturnTrueForMale() throws Exception {
+        // Arrange - подготовка
         Lion lion = new Lion("Самец", felineMock);
-        // Дважды вызываем - должно возвращать одинаковое значение
-        assertTrue(lion.doesHaveMane());
-        assertTrue(lion.doesHaveMane());
+
+        // Act - действие
+        boolean hasMane = lion.doesHaveMane();
+
+        // Assert - проверка
+        assertTrue(hasMane);
+    }
+
+    @Test
+    void doesHaveManeShouldReturnFalseForFemale() throws Exception {
+        // Arrange - подготовка
+        Lion lion = new Lion("Самка", felineMock);
+
+        // Act - действие
+        boolean hasMane = lion.doesHaveMane();
+
+        // Assert - проверка
+        assertFalse(hasMane);
     }
 }

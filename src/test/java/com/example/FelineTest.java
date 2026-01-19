@@ -13,37 +13,58 @@ class FelineTest {
     private final Feline feline = new Feline();
 
     @Test
-    void eatMeat_ShouldReturnMeatList() throws Exception {
-        // Act
+    void eatMeatShouldReturnMeatList() throws Exception {
+        // Arrange - подготовка (в данном случае объект уже создан)
+
+        // Act - действие: вызываем метод eatMeat()
         List<String> food = feline.eatMeat();
 
-        // Assert
+        // Assert - проверка: сравниваем результат с ожидаемым
         assertEquals(List.of("Животные", "Птицы", "Рыба"), food);
     }
 
     @Test
-    void getFamily_ShouldReturnFelidae() {
-        // Act & Assert
-        assertEquals("Кошачьи", feline.getFamily());
+    void getFamilyShouldReturnFelidae() {
+        // Arrange - подготовка (объект уже создан)
+
+        // Act - действие: вызываем метод getFamily()
+        String family = feline.getFamily();
+
+        // Assert - проверка
+        assertEquals("Кошачьи", family);
     }
 
     @Test
-    void getKittens_NoArguments_ShouldReturnOne() {
-        // Act & Assert
-        assertEquals(1, feline.getKittens());
+    void getKittensNoArgumentsShouldReturnOne() {
+        // Arrange - подготовка
+
+        // Act - действие: вызываем метод getKittens() без аргументов
+        int kittens = feline.getKittens();
+
+        // Assert - проверка: должно вернуться 1
+        assertEquals(1, kittens);
     }
 
-    // Параметризованный тест для разного количества котят
-    @ParameterizedTest
-    @ValueSource(ints = {0, 1, 3, 5, 10})
-    void getKittens_WithArgument_ShouldReturnSameNumber(int kittensCount) {
-        // Act & Assert
-        assertEquals(kittensCount, feline.getKittens(kittensCount));
-    }
     @Test
-    void eatMeat_ShouldNotReturnEmptyList() throws Exception {
+    void eatMeatShouldNotReturnEmptyList() throws Exception {
+        // Arrange - подготовка
+
+        // Act - действие
         List<String> food = feline.eatMeat();
+
+        // Assert - проверка: список не должен быть пустым
         assertFalse(food.isEmpty());
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1, 3, 5, 10})
+    void getKittensWithArgumentShouldReturnSameNumber(int kittensCount) {
+        // Arrange - подготовка
+
+        // Act - действие: вызываем метод getKittens() с аргументом
+        int result = feline.getKittens(kittensCount);
+
+        // Assert - проверка: результат должен быть равен переданному числу
+        assertEquals(kittensCount, result);
+    }
 }

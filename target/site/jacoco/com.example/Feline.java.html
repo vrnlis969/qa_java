@@ -2,7 +2,7 @@
 
 import java.util.List;
 
-<span class="fc" id="L5">public class Feline extends Animal implements FelineInterface {  // Изменили здесь</span>
+<span class="fc" id="L5">public class Feline extends Animal implements Predator {  // Теперь implements Predator</span>
     @Override
     public List&lt;String&gt; eatMeat() throws Exception {
 <span class="fc" id="L8">        return getFood(&quot;Хищник&quot;);</span>
